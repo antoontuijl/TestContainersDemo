@@ -1,35 +1,28 @@
 using TestContainers.Demo.Data;
-using TestContainers.Demo.Models;
+using TestContainers.Demo.Dtos;
 using TestContainers.Demo.Services;
 using Testcontainers.PostgreSql;
 
 namespace TestContainers.Demo.Tests;
 
-public sealed class CustomerServiceTest : IAsyncLifetime
+public sealed class CustomerServiceTest : IClassFixture<CustomerFunctionFixture>
 {
-    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder()
-        .WithImage("postgres:15-alpine")
-        .Build();
+    private readonly CustomerFunctionFixture _customerFunctionFixtureFixture;
 
-    public Task InitializeAsync()
+    public CustomerServiceTest(CustomerFunctionFixture customerFunctionFixtureFixture)
     {
-        return _postgres.StartAsync();
-    }
-
-    public Task DisposeAsync()
-    {
-        return _postgres.DisposeAsync().AsTask();
+        _customerFunctionFixtureFixture = customerFunctionFixtureFixture;
     }
 
     [Fact]
     public void ShouldReturnTwoCustomers()
     {
         // Arrange
-        var customerService = new CustomerService(new DbConnectionProvider(_postgres.GetConnectionString()));
+        var customerService = new CustomerService(new DbConnectionProvider(_customerFunctionFixtureFixture.GetPostgresDbConnectionString()));
 
         // Act
-        customerService.Create(new Customer(1, "George"));
-        customerService.Create(new Customer(2, "John"));
+        customerService.Create(new CustomerDto(1, "George"));
+        customerService.Create(new CustomerDto(2, "John"));
         var customers = customerService.GetCustomers();
 
         // Assert

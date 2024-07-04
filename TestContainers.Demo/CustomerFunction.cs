@@ -3,22 +3,22 @@ using System.Net;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using TestContainers.Demo.Models;
+using TestContainers.Demo.Dtos;
 using TestContainers.Demo.Services;
 
 namespace TestContainers.Demo;
 
-public class CreateCustomer(ICustomerService customerService, ILoggerFactory loggerFactory)
+public class CustomerFunction(ICustomerService customerService, ILoggerFactory loggerFactory)
 {
-    private readonly ILogger _logger = loggerFactory.CreateLogger<CreateCustomer>();
+    private readonly ILogger _logger = loggerFactory.CreateLogger<CustomerFunction>();
 
     [Function("CreateCustomer")]
     public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req,
         FunctionContext executionContext)
     {
-        Customer customer = await req.ReadFromJsonAsync<Customer>();
+        CustomerDto customerDto = await req.ReadFromJsonAsync<CustomerDto>();
 
-        customerService.Create(customer);
+        customerService.Create(customerDto);
 
         HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "text/plain; charset=utf-8");

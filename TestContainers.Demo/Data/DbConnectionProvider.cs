@@ -3,17 +3,10 @@ using Npgsql;
 
 namespace TestContainers.Demo.Data;
 
-public sealed class DbConnectionProvider
+public sealed class DbConnectionProvider(string connectionString)
 {
-    private readonly string _connectionString;
-
-    public DbConnectionProvider(string connectionString)
-    {
-        _connectionString = connectionString;
-    }
-
     public DbConnection GetConnection()
     {
-        return new NpgsqlConnection(_connectionString);
+        return new NpgsqlConnection(connectionString);
     }
 }
