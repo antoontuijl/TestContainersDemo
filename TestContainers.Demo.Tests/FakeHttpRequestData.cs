@@ -10,7 +10,7 @@ public class FakeHttpRequestData : HttpRequestData
     public FakeHttpRequestData(FunctionContext functionContext, Stream body) : base(functionContext)
     {
         Body = body;
-        Headers = new HttpHeadersCollection { { "Content-Type", "application/json; charset=utf-8" } };
+        Headers = new HttpHeadersCollection { { "Content-Type", "application/json" } };
     }
 
     public override Stream Body { get; }

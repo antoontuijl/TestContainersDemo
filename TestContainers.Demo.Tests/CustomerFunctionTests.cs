@@ -34,12 +34,13 @@ public class CustomerFunctionTests : IClassFixture<CustomerFunctionFixture>
             // Arrange
             var customerDto = new CustomerDto(1, "George");
             var context = new FakeFunctionContext();
+            var json = JsonConvert.SerializeObject(customerDto);
             var req = new FakeHttpRequestData(context,
-                new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(customerDto)))
+                new MemoryStream(Encoding.UTF8.GetBytes(json))
             );
             
             // Act
-            var response = await sut.Run(req, context);
+            var response = await sut.CreateCustomer(req);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
