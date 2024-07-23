@@ -8,21 +8,15 @@ using TestContainers.Demo.Dtos;
 
 namespace TestContainers.Demo.Tests;
 
-public class CustomerFunctionTests : IClassFixture<CustomerFunctionFixture>
+public class CustomerFunctionTests(CustomerFunctionFixture customerFunctionFixtureFixture)
+    : IClassFixture<CustomerFunctionFixture>
 {
-    private readonly CustomerFunctionFixture _customerFunctionFixtureFixture;
-
-    public CustomerFunctionTests(CustomerFunctionFixture customerFunctionFixtureFixture)
-    {
-        _customerFunctionFixtureFixture = customerFunctionFixtureFixture;
-    }
-    
     [Fact]
     public async Task Post_ShouldCreateNote_WhenCalledWithValidNoteDetails()
     {
         var host = new HostBuilder()
             .ConfigureFunctionsWorkerDefaults()
-            .ConfigureDefaultTestHost(_customerFunctionFixtureFixture)
+            .ConfigureDefaultTestHost(customerFunctionFixtureFixture)
             .Build();
 
         using (host)
